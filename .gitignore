@@ -1,4 +1,10 @@
+# Only track the actual settings files
+# and not all the other stuff that gets stored in .emacs.d
+
+# Ignore everything
 *
+
+# Except the following:
 !.gitignore
 !init.el
 !readme.org
