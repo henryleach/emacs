@@ -1,0 +1,391 @@
+#+TITLE: "Henry's Emacs Config File"
+
+Setting configuration in an complied org file for better organisation. 
+
+* References/other init files
+
+[[https://zzamboni.org/post/my-emacs-configuration-with-commentary/]] [[https://github.com/zzamboni/dot-emacs/blob/master/init.org]]
+[[https://pages.sachachua.com/.emacs.d/Sacha.html#org955a0ab]]
+[[https://github.com/patrickt/emacs/blob/master/readme.org]] (and the [[https://github.com/patrickt/emacs/blob/master/init.el][init.el]] file)
+[[http://www.howardism.org/Technical/Emacs/emacs-init.html]]
+[[https://github.com/cocreature/dotfiles/blob/master/emacs/.emacs.d/emacs.org]]
+[[https://blog.sumtypeofway.com/posts/emacs-config.html]]
+[[https://github.com/PythonNut/quark-emacs]]
+
+[[https://github.com/jwiegley/use-package][Use Package Docs]]
+
+** Useful Commands I always forget
+
+=C-h k= Describes keybindings
+=M-;= Comment region
+=<s TAB= Insert Code Block. This is actually part of a whole templating system.
+
+* Basic Customisation
+
+#+begin_src emacs-lisp
+(setq
+inhibit-startup-screen t
+;; Get rid of all noises
+ring-bell-function 'ignore
+;; I might be a beginner, but I know what the scratch buffer is.
+initial-scratch-message nil
+;; One space should be enough for anyone 
+sentence-end-double-space nil
+;; Delete the whole line and following newline
+kill-whole-line t
+)
+
+;; Accept 'y' in lieu of 'yes'.
+(defalias 'yes-or-no-p 'y-or-n-p)
+;; Overwrite selected text
+(delete-selection-mode t)
+;; Line numbers everywhere
+(global-display-line-numbers-mode t)
+;; Soft line wrapping - only in text modes?
+(global-visual-line-mode 1)
+;; Show the matching brackets
+(show-paren-mode)
+;; Also show the column/character position in the modeline
+(column-number-mode)
+#+end_src
+
+It can get confusing if emacs saves some custom variable without you expecting it, then changes in your config file don't seem to work. So send these changes to nowhere
+
+#+BEGIN_SRC emacs-lisp
+(setq custom-file null-device)
+#+END_SRC
+
+** UTF-8 Everywhere
+
+#+begin_src emacs-lisp :tangle no
+(set-charset-priority 'unicode)
+(setq locale-coding-system 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(set-selection-coding-system 'utf-8)
+(prefer-coding-system 'utf-8)
+(setq default-process-coding-system '(utf-8-unix . utf-8-unix))
+#+end_src
+
+** Backup File Location
+
+It's crazy to have them scattered everywhere, instead put them in one place:
+
+#+begin_src emacs-lisp
+(setq backup-directory-alist '(("." . "~/.emacs.d/backups")))
+#+end_src
+
+** TODO Tabs
+
+Tabs are a [[https://www.emacswiki.org/emacs/TabsAreEvil][bit of a mess]] and it should probably be fixed once I've understood it.
+
+* Appearance
+** Theme
+
+[[https://github.com/bbatsov/solarized-emacs][Solarized]] is relativly sedate. 'material-theme' is also nice, but has ugly looking blocks around headings in org-mode. The cool kids these days are mostly using [[https://github.com/hlissner/emacs-doom-themes][Doom Themes]].
+
+#+begin_src emacs-lisp
+(use-package solarized-theme
+:ensure t
+:config
+(load-theme 'solarized-dark t))
+#+end_src
+
+** Fonts and Text Appearance
+
+We want proprtional fonts in a number of places, but not others.
+
+Could probably pick a specific font too if I wanted, something more serify. To see which fonts are available, run =(font-family-list)= in scratch, and see the result. Can also use =(x-list-fonts "Font Name")= but that might be for X-based systems only, e.g. not Windows.
+
+To list monospaced fonts, filter with the below, as found on SO.
+#+BEGIN_SRC emacs-lisp :tangle no
+(seq-filter (lambda (font)
+              (when-let ((info (font-info font)))
+                (string-match-p "spacing=100" (aref info 1))))
+            (font-family-list))
+#+END_SRC
+
+Fonts are very dependant on what's installed on each system, so we do some checking first, othewise fall back to defaults. There's probably a much better way of doing this that allows fall backs. Perhaps don't even need to check for the OS (is the font listing method OS specific?). 
+
+#+BEGIN_SRC emacs-lisp
+(cond ((eq system-type 'windows-nt)
+      ;; Windows options
+      )
+      ((eq system-type 'gnu/linux)
+      ;; Linux options
+      (if (find-font (font-spec :name "DejaVu Serif"))
+         (set-face-attribute 'variable-pitch nil :font "DejaVu Serif-13"))
+      (if (find-font (font-spec :name "DejaVu Sans Mono"))
+         (set-face-attribute 'fixed-pitch nil :font "DejaVu Sans Mono-11")
+      )))
+
+(defun set-buffer-variable-pitch ()
+  (interactive)
+  (variable-pitch-mode t)
+  (setq line-spacing 3)
+   (set-face-attribute 'org-table nil :inherit 'fixed-pitch)
+   (set-face-attribute 'org-code nil :inherit 'fixed-pitch)
+   (set-face-attribute 'org-block nil :inherit 'fixed-pitch)
+  )
+;; Specify where the proportional fonts should be used.
+(add-hook 'org-mode-hook 'set-buffer-variable-pitch)
+(add-hook 'eww-mode-hook 'set-buffer-variable-pitch)
+(add-hook 'Info-mode-hook 'set-buffer-variable-pitch)
+#+END_SRC
+
+** Mode Line
+
+These days everyone has a fancy modeline, no-one even knows what the origional one looks like anymore.
+
+#+begin_src emacs-lisp
+;; Needed for multiple mode-line
+;; themes
+(use-package all-the-icons
+  :ensure t
+)
+
+;; Don't forget to run M-x all-the-icons-install-fonts
+;; to install those too, otherwise it won't work.
+
+(use-package doom-modeline
+  :ensure t
+  :config (doom-modeline-mode 1))
+#+end_src
+
+** Dimmer
+
+Dims the modeline of the inactive buffers.
+
+#+begin_src emacs-lisp
+(use-package dimmer
+  :ensure t
+  :custom (dimmer-fraction 0.1)
+  :config (dimmer-mode))
+#+end_src
+
+** Rainbow Delimeters
+
+Pretty and helpful for any bracket heavy languages.
+
+#+begin_src emacs-lisp
+(use-package rainbow-delimiters
+ :ensure t
+ :config
+ (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
+)
+#+end_src
+
+* Packages
+** TODO Dired
+
+Want to reduce the clutter mostly by hiding hidden files and extended information. 
+
+Perhaps package dired+ or dired-subtree is interesting? also other [[https://github.com/Fuco1/dired-hacks][dired hacks]]. There's also something in [[https://github.com/patrickt/emacs/blob/master/readme.org][this]] about dired opening multiple windows, which mine does and is very annoying. Looks like I should be using =a= instead of =RET=. Also =i= opens a directory in the same buffer below.
+
+Also hiding details by default needs to be enabled somehow.
+
+#+begin_src emacs-lisp
+  (use-package dired-x
+    :commands dired-mode
+    :bind (:map dired-mode-map ("C-o" . dired-omit-mode))
+    :config
+    (progn
+      (setq dired-dwim-target t)
+      (setq-default dired-omit-mode t)
+      (setq-default dired-omit-files "^\\.?#\\|^\\.$\\|^\\.\\.$\\|^\\.")
+      )) 
+#+end_src
+
+** Which Key
+
+Shows possible completitions. Also use which-key-postframe?
+
+#+begin_src emacs-lisp
+(use-package which-key 
+ :ensure t
+ :init 
+ (which-key-mode t)
+)
+#+end_src
+
+** Undo-Tree
+
+Naturally bound to =C-u=, =n= and =p= navigate up and down, =f= and =b= switch branches. =q= (or =C-q=) will quit with changes matching the point you selected.
+
+Also make =C-z= simple undo, I can't get that muscle memory out of my fingers.
+
+[[http://pragmaticemacs.com/emacs/advanced-undoredo-with-undo-tree]]
+
+#+begin_src emacs-lisp
+(use-package undo-tree
+  :ensure t
+  :diminish undo-tree-mode
+  :config
+  (progn
+    (global-undo-tree-mode)
+    (setq undo-tree-visualizer-timestamps t)
+    (setq undo-tree-visualizer-diff t)
+    (global-unset-key "\C-z") ;; remove other bindings
+    (global-set-key "\C-z" 'undo-tree-undo)))
+#+end_src
+ 
+** Ido
+
+Better suggestion customisation. Is the list better vertical, or horizontal?
+
+#+begin_src emacs-lisp
+(use-package ido
+  :ensure t
+  :config
+  (progn
+    (setq ido-enable-flex-matching t)
+    (setq ido-everywhere t)
+    (ido-mode 1)
+    ;; Display ido results vertically, rather than horizontally
+   ;; (setq ido-decorations (quote ("\n-> " "" "\n   " "\n   ..." "[" "]" " [No match]" " [Matched]" " [Not readable]" " [Too big]" " [Confirm]")))
+))
+#+end_src
+
+** Regex
+
+I'm too used to Python's regex to use anything else, plus look-ahead/behind (?= ,?<= etc) are essential and not in emacs regexp. I also never want to do a non-regex query-replace or search. This does require python being installed, but it's almost everywhere already. 
+
+/Default Commands Reminder/
+- =C-s= isearch-forward -> remapped
+- =C-r= iseach-backward -> remapped.
+- =C-M-s= isearch-forward-regexp
+- =C-M-r= isearch-backward-regexp
+- =M-%= query-replace - remappd to visual-regex replace.
+- =C-M-%= query-replace-regexp
+
+#+begin_src emacs-lisp
+(use-package visual-regexp
+  :ensure t
+  :config
+  (progn
+    (global-set-key "\M-%" 'vr/query-replace)
+    ))
+
+;; Requires python
+(use-package visual-regexp-steroids
+  :ensure t
+  :config
+  (progn
+    (global-set-key "\C-s" 'vr/isearch-forward)
+    (global-set-key "\C-r" 'vr/isearch-backward)
+))
+#+end_src
+
+** TODO Spell Checking
+
+Enable flyspell in all text modes and in those places in source where you write comments. This uses either ispell or aspell on Linux, but on windows you have to install Hunspell and the appropriate dictionary.
+
+#+BEGIN_SRC emacs-lisp :tangle no
+;; set up hunspell dictionary for windows
+(add-to-list 'exec-path "C:/path/to/Hunspell/bin/")
+
+(setq ispell-program-name (locate-file "hunspell"
+            exec-path exec-suffixes 'file-executable-p))
+(setq ispell-list-command "--list")
+(setq ispell-local-dictionary "en_GB")
+
+#+END_SRC
+
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'text-mode-hook 'flyspell-mode)
+(add-hook 'prog-mode-hook 'flyspell-prog-mode)
+
+;; On big org files this can get very slow, so use it only when not typing
+(use-package flyspell-lazy
+  :ensure t
+  :config
+  (flyspell-lazy-mode 1)
+)
+#+END_SRC
+
+* TODO Org-Mode
+
+Basic changes.
+
+#+begin_src emacs-lisp
+;; show inline images as a default.
+(setq org-startup-with-inline-images t)
+
+;; Store links from anywhere
+(global-set-key (kbd "C-c l") 'org-store-link)
+(global-set-key (kbd "C-c a") 'org-agenda)
+#+end_src
+
+More to do states, and their colours (not always theme compatible, should probably update that later).
+
+#+begin_src emacs-lisp
+;; TODO list sequence, add 'IN PROGRESS' and  'WAITING' to default options
+(setq org-todo-keywords
+      '((sequence "TODO" "IN PROGRESS" "WAITING" "|" "DONE")))
+
+;; Colour the todo keywords
+(setq org-todo-keyword-faces
+  '(("TODO" . (:foreground "white" :background "OrangeRed3"))
+    ("IN PROGRESS" . (:foreground "white" :background "firebrick"))
+    ("WAITING" . (:background "pink"))
+    ("DONE" . (:background "OliveDrab3"))))
+#+end_src
+
+Appearance, based a lot [[https://zzamboni.org/post/beautifying-org-mode-in-emacs/][on this]]. Some useful info [[https://protesilaos.com/codelog/2020-07-17-emacs-mixed-fonts-org/][here too]].
+
+#+BEGIN_SRC emacs-lisp
+;; Means * / = ~ etc. will be hidden.
+(setq org-hide-emphasis-markers t)
+
+;; Pretty bullets instead of lots of stars
+(use-package org-bullets
+  :ensure t
+  :config
+  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+#+END_SRC
+
+* TODO Exporting
+
+** HTMLIZE
+
+This helps to syntax colour exported code blocks, needed by org-mode's html export module. 
+#+BEGIN_SRC emacs-lisp
+(use-package htmlize
+   :ensure t
+)
+#+END_SRC
+
+ Ideas?
+ https://zzamboni.org/post/my-blogging-setup-with-emacs-org-mode-ox-hugo-hugo-gitlab-and-netlify/
+
+* Programming
+** TODO Python  
+** YAML
+
+#+begin_src emacs-lisp
+(use-package yaml-mode
+  :mode "\\.yaml\\'"
+  :ensure t)
+#+end_src
+
+** Web
+
+#+begin_src emacs-lisp
+(use-package web-mode
+  :ensure t
+  :mode ("\\.html\\'"
+         "\\.css\\'"
+         "\\.php\\'")
+  :config
+  (progn
+    (setq web-mode-code-indent-offset 2)
+    (setq web-mode-enable-auto-quoting nil)))
+#+end_src
+
+* Interesting Packages to be investigated
+
+- ace-jump-mode
+- ace window
+- dired subtree.
+
