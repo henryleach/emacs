@@ -8,3 +8,7 @@
 !.gitignore
 !init.el
 !readme.org
+!email_style.css
+!private_functions
+!private_functions/hl_functions.el
+!agenda_files.txt

@@ -24,3 +24,4 @@
 (require 'org)
 (require 'ob-tangle)
 (org-babel-load-file "~/.emacs.d/readme.org")
+(put 'dired-find-alternate-file 'disabled nil)
