@@ -1,0 +1,14 @@
+# Only track the actual settings files
+# and not all the other stuff that gets stored in .emacs.d
+
+# Ignore everything
+*
+
+# Except the following:
+!.gitignore
+!init.el
+!readme.org
+!email_style.css
+!private_functions
+!private_functions/hl_functions.el
+!agenda_files.txt

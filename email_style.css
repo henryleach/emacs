@@ -1,0 +1,30 @@
+/* Tries to mimic Gmails email style for easy
+ * copy and paste, but with the ability to have
+ * tables and other HTML stylings.
+ */
+
+body {
+    font-family: Helvetica, sans-serif;
+    font-size: 13px;
+    /* ^Seems to match the 'Normal' font size in GMail.
+     at least on my screens. */
+}
+
+/* Table Heading */
+th {
+    background-color: LightSteelBlue;
+}
+
+/* Fancy striped tables */
+tr:nth-child(even){
+    background-color: WhiteSmoke;
+}
+
+caption {
+    font-family: verdana;
+    color: grey;
+}
+    
+.table-number {
+    font-weight: bold;
+}
