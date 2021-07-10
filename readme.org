@@ -258,35 +258,22 @@ Better suggestion customisation. Is the list better vertical, or horizontal?
 
 ** Regex
 
-I'm too used to Python's regex to use anything else, plus look-ahead/behind (?= ,?<= etc) are essential and not in emacs regexp. I also never want to do a non-regex query-replace or search. Seems to be harder to get to work on Windows, so make it Linux only for now.
-
 /Default Commands Reminder/
-- =C-s= isearch-forward -> remapped
-- =C-r= iseach-backward -> remapped.
+- =C-s= isearch-forward
+- =C-r= iseach-backward
 - =C-M-s= isearch-forward-regexp
 - =C-M-r= isearch-backward-regexp
-- =M-%= query-replace - remappd to visual-regex replace.
-- =C-M-%= query-replace-regexp
+- =M-%= query-replace
+- =C-M-%= query-replace-regexp - remapped to visual-regexp
 
 #+begin_src emacs-lisp
 (use-package visual-regexp
   :ensure t
   :config
   (progn
-    (global-set-key "\M-%" 'vr/query-replace)
+    (define-key global-map (kbd "C-M-%") 'vr/query-replace)
     ))
 
-;; Requires python
-;; seems to fail on windows with a error unicode
-(when (eq system-type 'gnu/linux)
-(use-package visual-regexp-steroids
-  :ensure t
-  :config
-  (progn
-    (global-set-key "\C-s" 'vr/isearch-forward)
-    (global-set-key "\C-r" 'vr/isearch-backward)
-))
-)
 #+end_src
 
 ** Ace-Jump
@@ -326,7 +313,7 @@ Jump to a specific point, better with two characters for large buffers, taken fr
 
 ** Spell Checking
 
-Enable flyspell in all text modes and in those places in source where you write comments. This uses either ispell or aspell on Linux, but on windows you have to install Hunspell and the appropriate dictionary.
+Enable flyspell in all text modes and in those places in source where you write comments. This uses either ispell or aspell on Linux (or MacOS, you can =brew install ispell=), but on Windows you have to install Hunspell and the appropriate dictionary. 
 
 #+BEGIN_SRC emacs-lisp
 ;; set up hunspell dictionary for windows
@@ -337,6 +324,10 @@ Enable flyspell in all text modes and in those places in source where you write 
                     exec-path exec-suffixes 'file-executable-p))
        (setq ispell-list-command "--list")
        (setq ispell-local-dictionary "en_GB")
+       )
+       ((eq system-type 'darwin)
+       ;; Assuming this is where "brew install ispell" puts it.
+       (setq ispell-program-name "/usr/local/bin/ispell")
        )
 )
 #+END_SRC
