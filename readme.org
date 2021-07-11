@@ -311,12 +311,20 @@ Jump to a specific point, better with two characters for large buffers, taken fr
 #+end_src
 
 
-** Spell Checking
+** TODO Spell Checking
 
-Enable flyspell in all text modes and in those places in source where you write comments. This uses either ispell or aspell on Linux (or MacOS, you can =brew install ispell=), but on Windows you have to install Hunspell and the appropriate dictionary. 
+Enable flyspell in all text modes and in those places in source where you write comments. This uses either ispell or aspell on Linux. For Windows and MacOS it seems to be easiest to use [[https://hunspell.github.io][Hunspell]] (MacOS:  =brew install hunspell=). Then you need to download the dictionaries you want, useful note from brew: 
+
+#+begin_quote
+Dictionary files (*.aff and *.dic) should be placed in ~/Library/Spelling/ or /Library/Spelling/. Homebrew itself provides no dictionaries for Hunspell, but you can download compatible dictionaries from other sources, such as https://wiki.openoffice.org/wiki/Dictionaries .
+#+end_quote
+
+Also emacs on MacOS can't find hunspell dictionaries unless you start it in the home folder, or use this [[https://passingcuriosity.com/2017/emacs-hunspell-and-dictionaries/][tip]] to fix that.
+
+Still not working on MacOS.
 
 #+BEGIN_SRC emacs-lisp
-;; set up hunspell dictionary for windows
+;; set up hunspell dictionary for windows and macos
 (cond ((eq system-type 'windows-nt)
        (add-to-list 'exec-path "~/.emacs.d/Hunspell/bin/")
 
@@ -326,12 +334,16 @@ Enable flyspell in all text modes and in those places in source where you write 
        (setq ispell-local-dictionary "en_GB")
        )
        ((eq system-type 'darwin)
-       ;; Assuming this is where "brew install ispell" puts it.
-       (setq ispell-program-name "/usr/local/bin/ispell")
+       ;; Set $DICPATH to "$HOME/Library/Spelling" for hunspell.
+       (setenv
+         "DICPATH"
+         (concat (getenv "HOME") "/Library/Spelling"))
+	 ;; Assuming this is where "brew install hunspell" puts it.
+       (setq ispell-program-name "/usr/local/bin/hunspell")
+       (setq ispell-local-dictionary "en_GB")
        )
 )
 #+END_SRC
-
 
 #+BEGIN_SRC emacs-lisp
 (add-hook 'text-mode-hook 'flyspell-mode)
