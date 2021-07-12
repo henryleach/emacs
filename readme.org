@@ -324,25 +324,27 @@ Also emacs on MacOS can't find hunspell dictionaries unless you start it in the 
 Still not working on MacOS.
 
 #+BEGIN_SRC emacs-lisp
-;; set up hunspell dictionary for windows and macos
-(cond ((eq system-type 'windows-nt)
-       (add-to-list 'exec-path "~/.emacs.d/Hunspell/bin/")
+  ;; set up hunspell dictionary for windows and macos
+  (cond ((eq system-type 'windows-nt)
+	 (add-to-list 'exec-path "~/.emacs.d/Hunspell/bin/")
 
-       (setq ispell-program-name (locate-file "hunspell"
-                    exec-path exec-suffixes 'file-executable-p))
-       (setq ispell-list-command "--list")
-       (setq ispell-local-dictionary "en_GB")
-       )
-       ((eq system-type 'darwin)
-       ;; Set $DICPATH to "$HOME/Library/Spelling" for hunspell.
-       (setenv
-         "DICPATH"
-         (concat (getenv "HOME") "/Library/Spelling"))
-	 ;; Assuming this is where "brew install hunspell" puts it.
-       (setq ispell-program-name "/usr/local/bin/hunspell")
-       (setq ispell-local-dictionary "en_GB")
-       )
-)
+	 (setq ispell-program-name (locate-file "hunspell"
+		      exec-path exec-suffixes 'file-executable-p))
+	 (setq ispell-list-command "--list")
+	 (setq ispell-local-dictionary "en_GB")
+	 )
+	 ((eq system-type 'darwin)
+	 ;; Set $DICPATH to "$HOME/Library/Spelling" for hunspell.
+	 (setenv
+	  "DICPATH"
+	  (concat (getenv "HOME") "/Library/Spelling"))
+	 (setenv "DICTIONARY" "en_GB")
+	   ;;Assuming this is where "brew install hunspell" puts it.
+	 (setq ispell-program-name "/usr/local/bin/hunspell")
+	 (setq ispell-list-command "--list")
+	 (setq ispell-local-dictionary "en_GB")
+	 )
+  )
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -414,7 +416,7 @@ Appearance, based a lot [[https://zzamboni.org/post/beautifying-org-mode-in-emac
 #+BEGIN_SRC emacs-lisp
 ;; Means * / = ~ etc. will be hidden.
 (setq org-hide-emphasis-markers t)
-
+(setq org-startup-folded t)
 ;; Pretty bullets instead of lots of stars
 (use-package org-bullets
   :ensure t
