@@ -48,6 +48,17 @@ Add more memory, the default limits are very low.
 (setq read-process-output-max (* 1024 1024)) ;; 1mb
 #+end_src
 
+** MacOS Options
+
+   If you have a UK Keyboard on a Mac, and want to type a hash symbol you need [[https://stackoverflow.com/questions/3977069/emacs-question-hash-key][this]].
+
+   #+begin_src emacs-lisp
+     ;; Allow hash to be entered
+     (cond ((eq system-type 'darwin)
+	    (global-set-key (kbd "M-3") '(lambda () (interactive) (insert "#")))
+            ))
+   #+end_src
+
 ** Windows 10 Options
 
 To get emacs working 'normally' there are a couple of steps you should do, [[http://ergoemacs.org/emacs/emacs_mswin.html][Xah tips]]
@@ -311,7 +322,7 @@ Jump to a specific point, better with two characters for large buffers, taken fr
 #+end_src
 
 
-** TODO Spell Checking
+** Spell Checking
 
 Enable flyspell in all text modes and in those places in source where you write comments. This uses either ispell or aspell on Linux. For Windows and MacOS it seems to be easiest to use [[https://hunspell.github.io][Hunspell]] (MacOS:  =brew install hunspell=). Then you need to download the dictionaries you want, useful note from brew: 
 
