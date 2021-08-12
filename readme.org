@@ -566,7 +566,17 @@ For Windows where python is installed via Anaconda, I can only get it to work re
 
 #+end_src
 
-
+** Markdown
+   #+begin_src emacs-lisp
+(use-package markdown-mode
+  :ensure t
+  :commands (markdown-mode gfm-mode)
+  :mode (("README\\.md\\'" . gfm-mode)
+         ("\\.md\\'" . markdown-mode)
+         ("\\.markdown\\'" . markdown-mode))
+  :init (setq markdown-command "multimarkdown"))
+   #+end_src
+   
 ** YAML
 
 #+begin_src emacs-lisp
