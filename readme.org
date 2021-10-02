@@ -448,22 +448,31 @@ The agenda view will also mess around with your windows/buffer views. With the l
 (setq org-agenda-restore-windows-after-quit t)
 #+END_SRC
 
-* TODO Exporting
+** TODO Exporting
 
-Normally I just want to export a small section as HTML to copy into an e-mail, never the whole file.
+ Normally I just want to export a small section as HTML to copy into an e-mail, never the whole file.
 
-#+BEGIN_SRC emacs-lisp
-(setq org-export-initial-scope "subtree")
-#+END_SRC
+ #+BEGIN_SRC emacs-lisp
+ (setq org-export-initial-scope "subtree")
+ #+END_SRC
 
-** HTMLIZE
+*** HTMLIZE
 
-This helps to syntax colour exported code blocks, needed by org-mode's html export module. 
-#+BEGIN_SRC emacs-lisp
-(use-package htmlize
-   :ensure t
-)
-#+END_SRC
+ This helps to syntax colour exported code blocks, needed by org-mode's html export module. 
+ #+BEGIN_SRC emacs-lisp
+ (use-package htmlize
+    :ensure t
+ )
+ #+END_SRC
+
+** Archiving
+
+Make the archive match the hierarchy in the main org document. Using the [[https://gist.github.com/kepi/2f4acc3cc93403c75fbba5684c5d852d][org-archive-subtree function]]. Replaces the usual function, under the same command =C-c C-x C-a=. This does keep the hierarchy, but not the sequence.
+
+   #+begin_src emacs-lisp
+(require 'org-archive-subtree-hierarchical)
+(setq org-archive-default-command 'org-archive-subtree-hierarchical)
+   #+end_src
 
 * Programming
 
