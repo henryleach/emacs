@@ -450,7 +450,7 @@ The agenda view will also mess around with your windows/buffer views. With the l
 
 ** TODO Exporting
 
- Normally I just want to export a small section as HTML to copy into an e-mail, never the whole file.
+ Normally I just want to export a small section as HTML to copy into an e-mail, never the whole file. This setting doesn't seem to stick though.
 
  #+BEGIN_SRC emacs-lisp
  (setq org-export-initial-scope "subtree")
@@ -596,16 +596,23 @@ For Windows where python is installed via Anaconda, I can only get it to work re
 
 ** Web
 
+If [[https://www.web-mode.org][Web-Mode]] doesn't automatically detect the correct engine for templates, you can force the correct one with =M-x web-mode-set-engine RET ENGINE_NAME RET=, e.g. "go".
+
+If that gets tiresome it is also possible to add:
+  : -*- engine:ENGINE_NAME -*-
+into a comment on the page.
+  
 #+begin_src emacs-lisp
-(use-package web-mode
-  :ensure t
-  :mode ("\\.html\\'"
-         "\\.css\\'"
-         "\\.php\\'")
-  :config
-  (progn
-    (setq web-mode-code-indent-offset 2)
-    (setq web-mode-enable-auto-quoting nil)))
+  (use-package web-mode
+    :ensure t
+    :mode ("\\.html\\'"
+	   "\\.css\\'"
+	   "\\.php\\'")
+    :config
+    (progn
+      (setq web-mode-code-indent-offset 2)
+      (setq web-mode-enable-engine-detection t)
+      (setq web-mode-enable-auto-quoting nil)))
 #+end_src
 
 ** TODO CSV
