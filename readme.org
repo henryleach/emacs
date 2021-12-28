@@ -67,7 +67,7 @@ To get emacs working 'normally' there are a couple of steps you should do, [[htt
 
 ** UTF-8 Everywhere
 
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp
 (set-charset-priority 'unicode)
 (setq locale-coding-system 'utf-8)
 (set-terminal-coding-system 'utf-8)
@@ -652,8 +652,8 @@ LSP mode for Python development environment instead of Elpy?
 
 * References/other config files of interest
 
-[[https://zzamboni.org/post/my-emacs-configuration-with-commentary/
-]][[https://github.com/zzamboni/dot-emacs/blob/master/init.org]]
+[[https://zzamboni.org/post/my-emacs-configuration-with-commentary/]]
+[[https://github.com/zzamboni/dot-emacs/blob/master/init.org]]
 
 [[https://pages.sachachua.com/.emacs.d/Sacha.html#org955a0ab]]
 
