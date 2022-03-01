@@ -422,6 +422,15 @@ More to do states, and their colours (not always theme compatible, should probab
     ("DONE" . (:background "OliveDrab3"))))
 #+end_src
 
+With long ToDo items names, the list can get messy and wrap in unpleasant ways, then a column view is nicer. Can access this from the agenda ToDo view ~C-c a t~ using ~C-c C-x C-c~. Note that you have to use this to sequence to refresh the column view as well, pressing ~g~ as usual refreshes, but jumps out of the column view. There's probably a way to fix that.
+
+#+BEGIN_SRC emacs-lisp
+;; Set the column view for the todo list
+;; see in agenda view with C-c C-x C-c
+(setq org-columns-default-format
+      "%35ITEM %TODO %15DEADLINE %ALLTAGS")
+#+end_src
+
 Appearance, based a lot [[https://zzamboni.org/post/beautifying-org-mode-in-emacs/][on this]]. Some useful info [[https://protesilaos.com/codelog/2020-07-17-emacs-mixed-fonts-org/][here too]].
 
 #+BEGIN_SRC emacs-lisp
@@ -447,6 +456,13 @@ The agenda view will also mess around with your windows/buffer views. With the l
 ;; The agenda view can mess with your layout
 (setq org-agenda-restore-windows-after-quit t)
 #+END_SRC
+
+For the clock table I don't want it to jump to days, but keep hours as the biggest unit, otherwise it's harder to compare tasks quickly.
+
+#+begin_src emacs-lisp
+;;Keep the clock table in hours, and not count days
+(setq org-duration-format (quote h:mm))
+#+end_src
 
 ** TODO Exporting
 
