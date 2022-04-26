@@ -651,6 +651,16 @@ The docs say that editing =csv-separators= should be enough to set the possible 
 )
 #+end_src
 
+** TODO Tex/Latex
+
+For editing LaTex documents [[https://www.gnu.org/software/auctex/documentation.html][AucTeX]] appears the most integrated option.
+   
+   #+begin_src emacs-lisp
+(use-package tex
+   :ensure auctex)
+#+end_src
+   
+
 * Interesting Packages to be investigated
 
 - expand region
