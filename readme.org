@@ -653,13 +653,16 @@ The docs say that editing =csv-separators= should be enough to set the possible 
 
 ** TODO Tex/Latex
 
-For editing LaTex documents [[https://www.gnu.org/software/auctex/documentation.html][AucTeX]] appears the most integrated option.
+For editing LaTex documents [[https://www.gnu.org/software/auctex/documentation.html][AucTeX]] appears the most integrated option, defaults below from the AucTex manual.
    
    #+begin_src emacs-lisp
 (use-package tex
    :ensure auctex)
+(setq TeX-auto-save t)
+(setq TeX-parse-self t)
+(setq-default TeX-master nil)
 #+end_src
-   
+
 
 * Interesting Packages to be investigated
 
