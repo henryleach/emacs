@@ -663,6 +663,22 @@ For editing LaTex documents [[https://www.gnu.org/software/auctex/documentation.
 (setq-default TeX-master nil)
 #+end_src
 
+** TODO Lilypond
+
+   [[https://www.lilypond.org][Lilypond]] is a LaTeX like way of marking up musical notation, and then generating the engraving, normally as a PDF file. There is [[https://lilypond.org/doc/v2.23/Documentation/usage/text-editor-support#emacs-mode][official documentation]] for it, but that didn't quite work, this had [[https://francopasut.netlify.app/post/emacs_write_lilypond/][more details]] to get Emacs to actually find the lilypond-mode.el file which is automatically installed with lilypond, but not automatically found.. This depends on where it's been installed, and there must be a good way of doing that. Here I'm just limiting to where it's installed on a Mac with brew.sh, and only checking it then. There is also an integration with [[https://melpa.org/#/flycheck-lilypond][flycheck]] that might be worth checking out.
+
+   #+begin_src emacs-lisp
+(cond ((eq system-type 'darwin)
+      (setq load-path (append (list
+			       (expand-file-name "/usr/local/Cellar/lilypond/2.22.2/share/emacs/site-lisp/lilypond"))
+			       load-path))))
+
+(autoload 'LilyPond-mode "lilypond-mode")
+(setq auto-mode-alist
+      (cons '("\\.ly$" . LilyPond-mode) auto-mode-alist))
+
+(add-hook 'LilyPond-mode-hook (lambda () (turn-on-font-lock)))
+   #+end_src
 
 * Interesting Packages to be investigated
 
