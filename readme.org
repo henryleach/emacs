@@ -41,11 +41,13 @@ It can get confusing if emacs saves some custom variable without you expecting i
 (setq custom-file null-device)
 #+END_SRC
 
-Add more memory, the default limits are very low.
+Some performance tweaks: add more memory, the default limits are very low and stop very long lines from hanging emacs.
 
 #+BEGIN_SRC emacs-lisp
 (setq gc-cons-threshold 100000000)
 (setq read-process-output-max (* 1024 1024)) ;; 1mb
+;; Avoid performance issues in files with very long lines.
+(global-so-long-mode 1)
 #+END_SRC
 
 ** Keybindings
