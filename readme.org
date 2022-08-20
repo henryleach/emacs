@@ -336,7 +336,6 @@ Jump to a specific point, better with two characters for large buffers, taken fr
 
 #+end_src
 
-
 ** Spell Checking
 
 Enable flyspell in all text modes and in those places in source where you write comments. This uses either ispell or aspell on Linux. For Windows and MacOS it seems to be easiest to use [[https://hunspell.github.io][Hunspell]] (MacOS:  =brew install hunspell=). Then you need to download the dictionaries you want, useful note from brew: 
@@ -347,17 +346,25 @@ Dictionary files (*.aff and *.dic) should be placed in ~/Library/Spelling/ or /L
 
 Also emacs on MacOS can't find hunspell dictionaries unless you start it in the home folder, or use this [[https://passingcuriosity.com/2017/emacs-hunspell-and-dictionaries/][tip]] to fix that.
 
-Still not working on MacOS.
+Working on mutli-language support:
+https://200ok.ch/posts/2020-08-22_setting_up_spell_checking_with_multiple_dictionaries.html
+https://www.monotux.tech/posts/2021/02/hunspell-multi-lang/
+https://stackoverflow.com/questions/42159012/emacs-spell-check-on-fly-for-2-languages
 
 #+BEGIN_SRC emacs-lisp
   ;; set up hunspell dictionary for windows and macos
   (cond ((eq system-type 'windows-nt)
 	 (add-to-list 'exec-path "~/.emacs.d/Hunspell/bin/")
+	 (setenv "DICTDIR" (expand-file-name "~/.emacs.d/Hunspell/")) 
 
 	 (setq ispell-program-name (locate-file "hunspell"
 		      exec-path exec-suffixes 'file-executable-p))
 	 (setq ispell-list-command "--list")
 	 (setq ispell-local-dictionary "en_GB")
+         ;; Added below to try and get multilanguage to work.
+	 ;; (setq ispell-dictionary "en_GB,de_DE_frami")
+	 ;; (ispell-set-spellchecker-params)
+	 ;; (ispell-hunspell-add-multi-dic "en_GB,de_DE_frami")
 	 )
 	 ((eq system-type 'darwin)
 	 ;; Set $DICPATH to "$HOME/Library/Spelling" for hunspell.
@@ -580,29 +587,31 @@ LSP Mode is all fancy and modern, but Elpy gets the job done.
 For Windows where python is installed via Anaconda, I can only get it to work reliably if I activate the environment I want to work in /first/ in the Anaconda prompt, then launch Emacs. This means installing all the dependencies in each environment first (e.g. jedi, flake8 etc.), but anything else eventually causes a failure as some different version of Python is launched in parallel which is missing the right packages. 
 
 #+begin_src emacs-lisp
-(use-package elpy
-  :ensure t
-  :defer t
-  :init
-  (advice-add 'python-mode :before 'elpy-enable)
-  :config
-  (setq elpy-rpc-python-command "python")
-  (setq elpy-rpc-virtualenv-path 'current)
-  (when (load "flycheck" t t) ;; is the 3rd value nil or t? depends who you ask. 
-     (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
-     (add-hook 'elpy-mode-hook 'flycheck-mode))
-)
+  (use-package elpy
+    :ensure t
+    :defer t
+    :init
+    (advice-add 'python-mode :before 'elpy-enable)
+    :config
+    (setq elpy-rpc-python-command "python")
+    (setq elpy-rpc-virtualenv-path 'current)
+    (when (load "flycheck" t t) ;; is the 3rd value nil or t? depends who you ask. 
+       (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
+       (add-hook 'elpy-mode-hook 'flycheck-mode))
+    (setq python-shell-interpreter "ipython"
+	  python-shell-interpreter-args "-i --simple-prompt")
+  )
 
-;; This ensures that the python shell buffer scrolls
-;; down to show the output of the last run code.
-(advice-add 'elpy-shell-send-region-or-buffer
-            :before (lambda (&optional rest)
-                      (let ((curbuf (current-buffer)))
-                        (elpy-shell-switch-to-shell)
-                        (goto-char (point-max))
-                        (recenter -10)
-                        (elpy-shell-switch-to-buffer)))
-            '((name . "elpy-shell-scroll-to-bottom")))
+  ;; This ensures that the python shell buffer scrolls
+  ;; down to show the output of the last run code.
+  (advice-add 'elpy-shell-send-region-or-buffer
+	      :before (lambda (&optional rest)
+			(let ((curbuf (current-buffer)))
+			  (elpy-shell-switch-to-shell)
+			  (goto-char (point-max))
+			  (recenter -10)
+			  (elpy-shell-switch-to-buffer)))
+	      '((name . "elpy-shell-scroll-to-bottom")))
 
 #+end_src
 
@@ -666,7 +675,7 @@ The docs say that editing =csv-separators= should be enough to set the possible 
 )
 #+end_src
 
-** TODO Tex/Latex
+** DONE Tex/Latex
 
 For editing LaTex documents [[https://www.gnu.org/software/auctex/documentation.html][AucTeX]] appears the most integrated option, defaults below from the AucTex manual.
    
@@ -678,7 +687,7 @@ For editing LaTex documents [[https://www.gnu.org/software/auctex/documentation.
 (setq-default TeX-master nil)
 #+end_src
 
-** TODO Lilypond
+** DONE Lilypond
 
    [[https://www.lilypond.org][Lilypond]] is a LaTeX like way of marking up musical notation, and then generating the engraving, normally as a PDF file. There is [[https://lilypond.org/doc/v2.23/Documentation/usage/text-editor-support#emacs-mode][official documentation]] for it, but that didn't quite work, this had [[https://francopasut.netlify.app/post/emacs_write_lilypond/][more details]] to get Emacs to actually find the lilypond-mode.el file which is automatically installed with lilypond, but not automatically found.. This depends on where it's been installed, and there must be a good way of doing that. Here I'm just limiting to where it's installed on a Mac with brew.sh, and only checking it then. There is also an integration with [[https://melpa.org/#/flycheck-lilypond][flycheck]] that might be worth checking out.
 
@@ -694,7 +703,20 @@ For editing LaTex documents [[https://www.gnu.org/software/auctex/documentation.
 
 (add-hook 'LilyPond-mode-hook (lambda () (turn-on-font-lock)))
    #+end_src
+   
+** Magit
 
+   For working with Git, and related EDiff settings. Could probably customise the faces of the diffs a bit more.
+   
+   #+begin_src emacs-lisp
+(use-package magit
+  :ensure t)
+
+;; Somewhat related EDiff settings
+;; Don't use the little pop-up window, and split horizontally by default.
+(setq ediff-window-setup-function 'ediff-setup-windows-plain)
+(setq ediff-split-window-function 'split-window-horizontally)
+   #+end_src
 * Interesting Packages to be investigated
 
 - expand region
