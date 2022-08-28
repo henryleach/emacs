@@ -69,8 +69,9 @@ Various characters that aren't reliably on all keyboards I use.
 (global-set-key (kbd "C-c e") "€")
 (global-set-key (kbd "C-c u") "ü")
 (global-set-key (kbd "C-c o") "ö")
+(global-set-key (kbd "C-c s") "ß")
 #+end_src
-   
+
 ** MacOS Options
 
    If you have a UK Keyboard on a Mac, and want to type a hash symbol you need [[https://stackoverflow.com/questions/3977069/emacs-question-hash-key][this]].
