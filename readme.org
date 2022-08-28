@@ -58,11 +58,19 @@ Some performance tweaks: add more memory, the default limits are very low and st
 
    General keybindings that aren't linked to any specific packages.
 
-   #+begin_src emacs-lisp
+#+begin_src emacs-lisp
 ;; When moving forward I want to be at the start of a word, not the end.
 (global-set-key (kbd "M-f") 'forward-to-word)
-   #+end_src
+#+end_src
 
+Various characters that aren't reliably on all keyboards I use.
+   
+#+begin_src emacs-lisp
+(global-set-key (kbd "C-c e") "€")
+(global-set-key (kbd "C-c u") "ü")
+(global-set-key (kbd "C-c o") "ö")
+#+end_src
+   
 ** MacOS Options
 
    If you have a UK Keyboard on a Mac, and want to type a hash symbol you need [[https://stackoverflow.com/questions/3977069/emacs-question-hash-key][this]].
