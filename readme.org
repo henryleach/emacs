@@ -6,15 +6,15 @@ Setting configuration in an complied org file for better organisation.
 
 #+begin_src emacs-lisp
 (setq
-inhibit-startup-screen t
-;; Get rid of all noises
-ring-bell-function 'ignore
-;; I might be a beginner, but I know what the scratch buffer is.
-initial-scratch-message nil
-;; One space should be enough for anyone 
-sentence-end-double-space nil
-;; Delete the whole line and following newline
-kill-whole-line t
+     inhibit-startup-screen t
+     ;; Get rid of all noises
+     ring-bell-function 'ignore
+     ;; I might be a beginner, but I know what the scratch buffer is.
+     initial-scratch-message nil
+     ;; One space should be enough for anyone 
+     sentence-end-double-space nil
+     ;; Delete the whole line and following newline
+     kill-whole-line t
 )
 
 ;; Accept 'y' in lieu of 'yes'.
@@ -29,6 +29,9 @@ kill-whole-line t
 (show-paren-mode)
 ;; Also show the column/character position in the modeline
 (column-number-mode)
+;; No need for tool or menu bar
+(menu-bar-mode -1)
+(tool-bar-mode -1)
 
 ;; Prefer a cursor bar to block, guess it's what I'm used to.
 (setq-default cursor-type 'bar)
