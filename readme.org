@@ -75,6 +75,26 @@ Various characters that aren't reliably on all keyboards I use.
 (global-set-key (kbd "C-c s") "ß")
 #+end_src
 
+** Remap Caps Lock
+
+   If you don't spend much time shouting when you type, it's worth remapping the Caps Lock key to being Control, as it's in a much nicer position than the normal control key.
+
+   *MacOS*
+   System Preferences > Keyboard > Modifier Keys
+
+   *Windows 10*
+   You have to edit the register, because...Windows? Copy the following into a text file, save with a ~.reg~ extension, then double click. This requires admin privileges. (From [[https://superuser.com/questions/949385/map-capslock-to-control-in-windows-10][StackExchange]]). 
+   
+   #+begin_src
+Windows Registry Editor Version 5.00
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Keyboard Layout]
+"Scancode Map"=hex:00,00,00,00,00,00,00,00,02,00,00,00,1d,00,3a,00,00,00,00,00
+   #+end_src
+   
+   *Linux*
+   Not done yet.   
+
 ** MacOS Options
 
    If you have a UK Keyboard on a Mac, and want to type a hash symbol you need [[https://stackoverflow.com/questions/3977069/emacs-question-hash-key][this]].
