@@ -68,3 +68,38 @@
     (insert attendee-list))
   )
   
+(defun my/cslist-to-newline-list ($in-cslist)
+  "Takes a string of comma separated words, and splits
+   them onto newlines, removing the comma."
+  (replace-regexp-in-string ", *" "\n" $in-cslist))
+
+;; TODO: There is probably a simple way to 'wrap' these interactive functions
+;; to not repeat the same code each time.
+(defun my/int-cslist-to-newline-list ($start $end)
+  "Interactive version of 'my/cslist-to-newline-list'"
+  (interactive "r")
+
+  (setq newline-list (my/cslist-to-newline-list (buffer-substring-no-properties $start $end)))
+
+  (save-excursion
+    (delete-region $start $end)
+    (goto-char $start)
+    (insert newline-list))
+  )
+
+(defun my/newline-list-to-cslist ($in-nllist)
+  "Takes a list separated by newlines, and puts them
+   onto one line, separated by a comma and space."
+    (replace-regexp-in-string " *\n" ", " $in-nllist))
+
+(defun my/int-newlins-list-to-cslist ($start $end)
+  "Interactive version of 'my/newline-list-to-cslist'"
+  (interactive "r")
+
+  (setq newline-list (my/newline-list-to-cslist (buffer-substring-no-properties $start $end)))
+
+  (save-excursion
+    (delete-region $start $end)
+    (goto-char $start)
+    (insert newline-list))
+  )
