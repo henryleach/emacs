@@ -597,11 +597,12 @@ I want a consistent configuration between Windows, MacOS and Linux; so I suspect
 For working with different python environments. This is also loaded/integrated with Elpy, but here we set the WORKON_HOME directory so it's easier to find them in =M-x pyvenv-workon=.
 
 #+begin_src emacs-lisp
-(use-package pyvenv
-  :ensure t
-  :init
-  (setenv "WORKON_HOME" "c:/ProgramData/Anaconda3/envs")
-)
+  (use-package pyvenv
+    :ensure t
+    :init
+    (cond ((eq system-type 'windows-nt)
+	  (setenv "WORKON_HOME" "c:/ProgramData/Anaconda3/envs")))
+  )
 #+end_src
 
 Slightly nicer than Flymake. For Python, make sure it's calling whatever the current envs python is.
