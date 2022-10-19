@@ -448,6 +448,20 @@ Allows for quick switching of buffers between windows within a frame, bound to =
   :bind ("C-=" . er/expand-region))
 #+end_src
 
+** Matching Pairs
+
+Use Skeleton pair to add matching brackets and similar items.
+
+#+begin_src emacs-lisp
+(setq skeleton-pair 't)
+(define-key global-map (kbd "\(") 'skeleton-pair-insert-maybe)
+(define-key global-map (kbd "\{") 'skeleton-pair-insert-maybe)
+(define-key global-map (kbd "\[") 'skeleton-pair-insert-maybe)
+(define-key global-map (kbd "\"") 'skeleton-pair-insert-maybe)
+(define-key global-map (kbd "\'") 'skeleton-pair-insert-maybe)
+(define-key global-map (kbd "\<") 'skeleton-pair-insert-maybe)
+#+end_src
+
 * TODO Org-Mode
 
 Basic changes. 
@@ -523,7 +537,7 @@ For the clock table I don't want it to jump to days, but keep hours as the bigge
  Normally I just want to export a small section as HTML to copy into an e-mail, never the whole file. This setting doesn't seem to stick though.
 
  #+BEGIN_SRC emacs-lisp
- (setq org-export-initial-scope "subtree")
+ (setq org-export-initial-scope 'subtree')
  #+END_SRC
 
 *** HTMLIZE
