@@ -462,7 +462,7 @@ Use Skeleton pair to add matching brackets and similar items.
 (define-key global-map (kbd "\<") 'skeleton-pair-insert-maybe)
 #+end_src
 
-* TODO Org-Mode
+* Org-Mode
 
 Basic changes. 
 
@@ -532,12 +532,26 @@ For the clock table I don't want it to jump to days, but keep hours as the bigge
 (setq org-duration-format (quote h:mm))
 #+end_src
 
-** TODO Exporting
+** Templates and Skeletons
+
+Use a basic org-mode template for new files. More details at [[https://www.gnu.org/software/emacs/manual/html_node/autotype/index.html][AutoType]].
+
+#+begin_src emacs-lisp
+  (auto-insert-mode)
+  (setq auto-insert-query nil)
+  (define-auto-insert '("\.org" . "Org Skeleton")
+  '("Short description: "
+    "#+TITLE: " _ \n
+    "#+DATE: "(format-time-string "<%Y-%m-%d %a>") \n
+    "#+FILETAGS: " \n \n))
+#+end_src
+
+** Exporting
 
  Normally I just want to export a small section as HTML to copy into an e-mail, never the whole file. This setting doesn't seem to stick though.
 
  #+BEGIN_SRC emacs-lisp
- (setq org-export-initial-scope 'subtree')
+(setq org-export-initial-scope 'subtree)
  #+END_SRC
 
 *** HTMLIZE
