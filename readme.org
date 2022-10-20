@@ -656,6 +656,7 @@ For Windows where python is installed via Anaconda, I can only get it to work re
     :config
     (setq elpy-rpc-python-command "python")
     (setq elpy-rpc-virtualenv-path 'current)
+    (setq elpy-get-info-from-shell t)
     (when (load "flycheck" t t) ;; is the 3rd value nil or t? depends who you ask. 
        (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
        (add-hook 'elpy-mode-hook 'flycheck-mode))
