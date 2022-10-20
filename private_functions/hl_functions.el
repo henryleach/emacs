@@ -103,3 +103,19 @@
     (goto-char $start)
     (insert newline-list))
   )
+
+(setq title-replacements-dict
+      '(("[-_]" . " ")
+        ("\.org" . "")))
+
+(defun my/create-org-title (string)
+  "Take and org-mode filename and turn it into a title"
+  (capitalize 
+  (seq-reduce
+   (lambda (string regexp-replacement-pair)
+     (replace-regexp-in-string
+      (car regexp-replacement-pair)
+      (cdr regexp-replacement-pair)
+      string))
+   title-replacements-dict
+   string)))

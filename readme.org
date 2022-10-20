@@ -458,7 +458,7 @@ Use Skeleton pair to add matching brackets and similar items.
 (define-key global-map (kbd "\{") 'skeleton-pair-insert-maybe)
 (define-key global-map (kbd "\[") 'skeleton-pair-insert-maybe)
 (define-key global-map (kbd "\"") 'skeleton-pair-insert-maybe)
-(define-key global-map (kbd "\'") 'skeleton-pair-insert-maybe)
+;;(define-key global-map (kbd "\'") 'skeleton-pair-insert-maybe) ;; confuses apostrphies
 (define-key global-map (kbd "\<") 'skeleton-pair-insert-maybe)
 #+end_src
 
@@ -541,9 +541,9 @@ Use a basic org-mode template for new files. More details at [[https://www.gnu.o
   (setq auto-insert-query nil)
   (define-auto-insert '("\.org" . "Org Skeleton")
   '("Short description: "
-    "#+TITLE: " _ \n
+    "#+TITLE: " (my/create-org-title (buffer-name)) \n
     "#+DATE: "(format-time-string "<%Y-%m-%d %a>") \n
-    "#+FILETAGS: " \n \n))
+    "#+FILETAGS: " \n \n _))
 #+end_src
 
 ** Exporting
