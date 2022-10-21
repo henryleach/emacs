@@ -93,7 +93,12 @@ Windows Registry Editor Version 5.00
    #+end_src
    
    *Linux*
-   Not done yet.   
+  None persistently with:
+  : setxkbmap -option ctrl:nocaps
+
+  but that won't survive a reboot. To make the change more permanent we need to add the option "ctrl:nocaps" to /etc/default/keyboard in the XKBOPTIONS="" part.
+
+  Steps from [[https://thesynack.com/posts/persistent-capslock-behavior/][here]].
 
 ** MacOS Options
 
