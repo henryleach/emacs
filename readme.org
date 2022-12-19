@@ -455,9 +455,9 @@ Allows for quick switching of buffers between windows within a frame, bound to =
 
 ** Matching Pairs
 
-Use Skeleton pair to add matching brackets and similar items.
+Use Skeleton pair to add matching brackets and similar items. Not sure this is helping, you have to somehow skip past the inserted other half, which is often more work than just typing the closing bracket, and leads (mostly) to less obvious errors. Trying again without.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (setq skeleton-pair 't)
 (define-key global-map (kbd "\(") 'skeleton-pair-insert-maybe)
 (define-key global-map (kbd "\{") 'skeleton-pair-insert-maybe)
