@@ -202,18 +202,18 @@ Fonts are very dependant on what's installed on each system, so we do some check
 These days everyone has a fancy modeline, no-one even knows what the origional one looks like anymore.
 
 #+begin_src emacs-lisp
-;; Needed for multiple mode-line
-;; themes
-(use-package all-the-icons
-  :ensure t
-)
+  ;; Needed for multiple mode-line
+  ;; themes
+  (use-package all-the-icons
+    :ensure t
+  )
 
-;; Don't forget to run M-x all-the-icons-install-fonts
-;; to install those too, otherwise it won't work.
+  ;; Don't forget to run M-x all-the-icons-install-fonts
+  ;; to install those too, otherwise it won't work.
 
-(use-package doom-modeline
-  :ensure t
-  :config (doom-modeline-mode 1))
+  (use-package doom-modeline
+    :ensure t
+    :config (doom-modeline-mode 1))
 #+end_src
 
 ** Dimmer
@@ -623,6 +623,16 @@ Company completion can be used in anything, but I only want to use it for coding
          (prog-mode . company-mode)))
 #+end_src 
 
+** Move Text
+
+Being able to push text up and down by line and region is pretty useful. Default is ~M-<up>~ and ~M-<down>~. Selecting a whole function can be done with ~C-M-h~.
+
+#+begin_src emacs-lisp
+  (use-package move-text
+    :ensure t
+    :hook (prog-mode . move-text-default-bindings))
+#+end_src
+
 ** TODO Python  
 
 I want a consistent configuration between Windows, MacOS and Linux; so I suspect this is going to be limited by what I can get work on Windows. 
@@ -648,11 +658,70 @@ Slightly nicer than Flymake. For Python, make sure it's calling whatever the cur
 )
 #+end_src
 
-LSP Mode is all fancy and modern, but Elpy gets the job done.
+*** Eglot
 
-For Windows where python is installed via Anaconda, I can only get it to work reliably if I activate the environment I want to work in /first/ in the Anaconda prompt, then launch Emacs. This means installing all the dependencies in each environment first (e.g. jedi, flake8 etc.), but anything else eventually causes a failure as some different version of Python is launched in parallel which is missing the right packages. 
+Eglot [[https://joaotavora.github.io/eglot/][docs]], and as of Emacs 29 should be part of the base install. I'm still somewhat confused by what features are provided by which parts, e.g. what comes from ~python-mode~, what from the LSP and what from the programs that are installed to feed the information in, e.g. Jedi.
 
 #+begin_src emacs-lisp
+  (use-package eglot
+    :ensure t) 
+  ;; Below taken from DDavis.io
+  (defvar hl-default-pyls "~/Documents/Programming/Python/venvs/lsp-venv/bin/pylsp"
+    "define a default pyls to be used")
+
+  (defun my/python-eglot-enable ()
+    "set variables and hook for eglot python IDE"
+    (interactive)
+    (setq company-backends
+	  (cons 'company-capf
+		(remove 'company-capf company-backends)))
+    (add-to-list 'eglot-server-programs
+		 `(python-mode ,hl-default-pyls))
+    (add-hook 'python-mode-hook 'eglot-ensure))
+
+  (defun my/python-eglot-disable ()
+    "remove hook for eglot python"
+    (interactive)
+    (remove-hook 'python-mode-hook 'eglot-ensure))
+
+  (define-key eglot-mode-map (kbd "C-c <tab>") #'company-complete) ; C-c C-i in some cases.
+
+  ;; Without the extra args it throws warnings and doesn't pass the code correctly.
+  (setq python-shell-interpreter "ipython"
+	python-shell-interpreter-args "-i --simple-prompt")
+#+end_src
+
+Create a venv and install the [[https://github.com/python-lsp/python-lsp-server][python-lsp-server]], also adding all the optional features for testing with
+: pip install "python-lsp-server[all]"
+
+ipython must be installed in the venv of the project you're working on, not in the lsp-venv
+
+Will have to add different locations depending on the computer this is being run.
+
+Elpy's ~elpy-nav-move-line-or-region-(up/down)~ bound to ~M-(up/down)~ was useful, how to get that back?
+
+_Various Useful posts_:
+- [[https://ddavis.io/posts/emacs-python-lsp/][DDavis.io]], which follows up from [[https://ddavis.io/posts/eglot-python-ide/][this]], which is eglot based
+- [[https://whatacold.io/blog/2022-01-22-emacs-eglot-lsp/][whatcold's version]]
+
+Run ~C-c ?~ in the python file to see list of all ~C-c~ bindings.
+
+| Key Binding | Command                        |
+|-------------+--------------------------------|
+| C-c C-p     | Run python                     |
+| C-c C-c     | Send buffer to Python shell    |
+| C-c C-r     | Send region to python shell    |
+| C-c C-e     | Send statement to python shell |
+| C-c C-d     | Describe at point              |
+| C-c C-f     | Eldoc at point                 |
+| C-c < or >  | Indent left or right           |
+
+*** Elpy - removing
+LSP Mode is all fancy and modern, but Elpy gets the job done - well it did, up to Python 3.10, and then it seems to have issues.
+
+For Windows where python is installed via Anaconda, I can only get it to work reliably if I activate the environment I want to work in /first/ in the Anaconda prompt, then launch Emacs. This means installing all the dependencies in each environment First (e.g. jedi, flake8 etc.), but anything else eventually causes a failure as some different version of Python is launched in parallel which is missing the right packages. 
+
+#+begin_src emacs-lisp :tangle no
   (use-package elpy
     :ensure t
     :defer t
