@@ -137,6 +137,20 @@ It's crazy to have them scattered everywhere, instead put them in one place:
 (setq backup-directory-alist '(("." . "~/.emacs.d/backups")))
 #+end_src
 
+** Set Frame Title
+
+#+begin_src emacs-lisp
+  (setq frame-title-format
+	'((:eval (if (buffer-file-name)
+		(abbreviate-file-name (buffer-file-name))
+		  "%b"))
+    (:eval (if (buffer-modified-p) 
+	       " •"))
+    " - Emacs")
+  )
+#+end_src
+
+
 ** TODO Tabs
 
 Tabs are a [[https://www.emacswiki.org/emacs/TabsAreEvil][bit of a mess]] and it should probably be fixed once I've understood it.
@@ -290,16 +304,18 @@ Also make =C-z= simple undo, I can't get that muscle memory out of my fingers.
 [[http://pragmaticemacs.com/emacs/advanced-undoredo-with-undo-tree]]
 
 #+begin_src emacs-lisp
-(use-package undo-tree
-  :ensure t
-  :diminish undo-tree-mode
-  :config
-  (progn
-    (global-undo-tree-mode)
-    (setq undo-tree-visualizer-timestamps t)
-    (setq undo-tree-visualizer-diff t)
-    (global-unset-key "\C-z") ;; remove other bindings
-    (global-set-key "\C-z" 'undo-tree-undo)))
+  (use-package undo-tree
+    :ensure t
+    :diminish undo-tree-mode
+    :config
+    (progn
+      (global-undo-tree-mode)
+      (setq undo-tree-visualizer-timestamps t)
+      (setq undo-tree-visualizer-diff t)
+      (global-unset-key "\C-z") ;; remove other bindings
+      (global-set-key "\C-z" 'undo-tree-undo)
+      (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo")))
+      ))
 #+end_src
  
 ** Ido
@@ -451,20 +467,6 @@ Allows for quick switching of buffers between windows within a frame, bound to =
 (use-package expand-region
   :ensure t
   :bind ("C-=" . er/expand-region))
-#+end_src
-
-** Matching Pairs
-
-Use Skeleton pair to add matching brackets and similar items. Not sure this is helping, you have to somehow skip past the inserted other half, which is often more work than just typing the closing bracket, and leads (mostly) to less obvious errors. Trying again without.
-
-#+begin_src emacs-lisp :tangle no
-(setq skeleton-pair 't)
-(define-key global-map (kbd "\(") 'skeleton-pair-insert-maybe)
-(define-key global-map (kbd "\{") 'skeleton-pair-insert-maybe)
-(define-key global-map (kbd "\[") 'skeleton-pair-insert-maybe)
-(define-key global-map (kbd "\"") 'skeleton-pair-insert-maybe)
-;;(define-key global-map (kbd "\'") 'skeleton-pair-insert-maybe) ;; confuses apostrphies
-(define-key global-map (kbd "\<") 'skeleton-pair-insert-maybe)
 #+end_src
 
 * Org-Mode
