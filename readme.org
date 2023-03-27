@@ -270,8 +270,11 @@ Want to reduce the clutter mostly by hiding hidden files and extended informatio
 Perhaps package dired+ or dired-subtree is interesting? also other [[https://github.com/Fuco1/dired-hacks][dired hacks]]. There's also something in [[https://github.com/patrickt/emacs/blob/master/readme.org][this]] about dired opening multiple windows, which mine does and is very annoying. Looks like I should be using =a= instead of =RET=. Also =i= opens a directory in the same buffer below.
 
 Also hiding details by default needs to be enabled somehow.
-
 #+begin_src emacs-lisp
+(add-hook 'dired-mode-hook (lambda () (dired-omit-mode)))
+#+end_src
+
+#+begin_src emacs-lisp :tangle no
   (use-package dired-x
     :commands dired-mode
     :bind (:map dired-mode-map ("C-o" . dired-omit-mode))
@@ -282,6 +285,16 @@ Also hiding details by default needs to be enabled somehow.
       (setq-default dired-omit-files "^\\.?#\\|^\\.$\\|^\\.\\.$\\|^\\.")
       )) 
 #+end_src
+
+~dired-narrow~ allows you to quickly filter the files in a dired buffer. 
+
+#+begin_src emacs-lisp
+  (use-package dired-narrow
+  :ensure t
+  :bind (:map dired-mode-map
+              ("/" . dired-narrow)))
+#+end_src
+
 
 ** Which Key
 

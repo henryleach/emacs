@@ -5,7 +5,7 @@
 
 (setq package-enable-at-startup nil)
 ;; Let's start with only stable melpa packages, and go from there.
-;;(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 ;;(add-to-list 'package-archives '("ublt" . "https://elpa.ubolonton.org/packages/"))
 ;;(add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
