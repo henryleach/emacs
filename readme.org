@@ -253,6 +253,42 @@ Pretty and helpful for any bracket heavy languages.
 )
 #+end_src
 
+** Xah Colour Colour Codes
+
+Highlights RGB values in their colours, using the following function from [[http://xahlee.info/emacs/emacs/emacs_CSS_colors.html][Xah Lee]].
+
+#+begin_src emacs-lisp
+(defun xah-syntax-color-hex ()
+  "Syntax color text of the form 「#ff1100」 and 「#abc」 in current buffer.
+URL `http://xahlee.info/emacs/emacs/emacs_CSS_colors.html'
+Version 2017-03-12"
+  (interactive)
+  (font-lock-add-keywords
+   nil
+   '(("#[[:xdigit:]]\\{3\\}"
+      (0 (put-text-property
+	  (match-beginning 0)
+	  (match-end 0)
+	  'face (list :background
+		      (let* (
+			     (ms (match-string-no-properties 0))
+			     (r (substring ms 1 2))
+			     (g (substring ms 2 3))
+			     (b (substring ms 3 4)))
+			(concat "#" r r g g b b))))))
+     ("#[[:xdigit:]]\\{6\\}"
+      (0 (put-text-property
+	  (match-beginning 0)
+	  (match-end 0)
+	  'face (list :background (match-string-no-properties 0)))))))
+  (font-lock-flush))
+
+(add-hook 'css-mode-hook 'xah-syntax-color-hex)
+(add-hook 'php-mode-hook 'xah-syntax-color-hex)
+(add-hook 'html-mode-hook 'xah-syntax-color-hex)
+  
+#+end_src
+
 * Packages
 ** Own Functions
 
@@ -594,6 +630,18 @@ Make the archive match the hierarchy in the main org document. Using the [[https
 
 * Programming
 
+** Smart Parenthesis
+
+A better way of dealing with brackets. [[https://github.com/Fuco1/smartparens][github page]], and a [[https://ebzzry.com/en/emacs-pairs/][user guide]].
+
+#+begin_src emacs-lisp
+(use-package smartparens-config
+  :ensure smartparens
+  :config (progn (show-smartparens-global-mode t)) ;; High list current pair
+  )
+(add-hook 'prog-mode-hook 'turn-on-smartparens-strict-mode)
+#+end_src
+
 ** Projectile
 
 [[https://docs.projectile.mx/projectile/index.html][Documents]] for project interaction library. To mark a folder as a project, add a empty '.projectile' file to it.
@@ -728,7 +776,6 @@ into a comment on the page.
   (use-package web-mode
     :ensure t
     :mode ("\\.html\\'"
-	   "\\.css\\'"
 	   "\\.php\\'")
     :config
     (progn
