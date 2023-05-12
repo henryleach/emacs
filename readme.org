@@ -181,36 +181,49 @@ To list monospaced fonts, filter with the below, as found on SO.
             (font-family-list))
 #+END_SRC
 
-Fonts are very dependant on what's installed on each system, so we do some checking first, otherwise fall back to defaults. There's probably a much better way of doing this that allows fall backs. Perhaps don't even need to check for the OS (is the font listing method OS specific?). 
+Fonts are very dependant on what's installed on each system, so there's a list of preferences and we work through those, picking the first installed one. Sizes can render a bit differently between OSs, with MacOS appearing slightly smaller, so we make that system dependent.
 
 #+BEGIN_SRC emacs-lisp
-  (defun font-candidate (&rest fonts)
-       "Return existing font which first match."
-       (cl-find-if (lambda (f) (find-font (font-spec :name f))) fonts))
+(defun font-candidate (&rest fonts)
+   "Return existing font which first match."
+   (cl-find-if (lambda (f) (find-font (font-spec :name f))) fonts))
 
-  ;; Choose fonts in order of preference here
-  ;; Must have at least one font that works on each system; 'nix, MacOS and Windows
-  (setq var-pitch-fonts '("DejaVu Serif-13" "Georgia-13"))
-  (setq fix-pitch-fonts '("Calling Code-12" "DejaVu Sans Mono-11" "Menlo-12" "Courier New-12"))
+;; Choose fonts in order of preference here
+;; Must have at least one font that works on each system; 'nix, MacOS and Windows
+(setq var-pitch-fonts '("DejaVu Serif" "Georgia"))
+(setq fix-pitch-fonts '("Calling Code" "DejaVu Sans Mono" "Menlo" "Courier New"))
 
-  (set-face-attribute 'variable-pitch nil :font (apply 'font-candidate var-pitch-fonts))
-  (set-face-attribute 'fixed-pitch nil :font (apply 'font-candidate fix-pitch-fonts))
+;; Sizes seem better if slightly larger on MacOS
+(setq var-pitch-font
+ (concat
+  (apply 'font-candidate var-pitch-fonts) "-"
+  (cond ((eq system-type 'darwin) ("13"))
+   ("12"))))
 
-  ;; Default font for most things
-  (set-frame-font (apply 'font-candidate fix-pitch-fonts) nil t)
+(setq fix-pitch-font
+ (concat
+  (apply 'font-candidate fix-pitch-fonts) "-"
+  (cond ((eq system-type 'darwin) ("12"))
+   ("11"))))
 
-    (defun set-buffer-variable-pitch ()
-      (interactive)
-      (variable-pitch-mode t)
-      (setq line-spacing 3)
-       (set-face-attribute 'org-table nil :inherit 'fixed-pitch)
-       (set-face-attribute 'org-code nil :inherit 'fixed-pitch)
-       (set-face-attribute 'org-block nil :inherit 'fixed-pitch)
-      )
-    ;; Specify where the proportional fonts should be used.
-    (add-hook 'org-mode-hook 'set-buffer-variable-pitch)
-    (add-hook 'eww-mode-hook 'set-buffer-variable-pitch)
-    (add-hook 'Info-mode-hook 'set-buffer-variable-pitch)
+(set-face-attribute 'variable-pitch nil :font var-pitch-font)
+(set-face-attribute 'fixed-pitch nil :font fix-pitch-font)
+
+;; Default font for most things
+(set-frame-font fix-pitch-font nil t)
+
+(defun set-buffer-variable-pitch ()
+  (interactive)
+  (variable-pitch-mode t)
+  (setq line-spacing 3)
+   (set-face-attribute 'org-table nil :inherit 'fixed-pitch)
+   (set-face-attribute 'org-code nil :inherit 'fixed-pitch)
+   (set-face-attribute 'org-block nil :inherit 'fixed-pitch)
+  )
+;; Specify where the proportional fonts should be used.
+(add-hook 'org-mode-hook 'set-buffer-variable-pitch)
+(add-hook 'eww-mode-hook 'set-buffer-variable-pitch)
+(add-hook 'Info-mode-hook 'set-buffer-variable-pitch)
 #+END_SRC
 
 #+RESULTS:
