@@ -158,7 +158,7 @@ Tabs are a [[https://www.emacswiki.org/emacs/TabsAreEvil][bit of a mess]] and it
 * Appearance
 ** Theme
 
-[[https://github.com/bbatsov/solarized-emacs][Solarized]] is relativly sedate. 'material-theme' is also nice, but has ugly looking blocks around headings in org-mode. The cool kids these days are mostly using [[https://github.com/hlissner/emacs-doom-themes][Doom Themes]].
+[[https://github.com/bbatsov/solarized-emacs][Solarized]] is relatively sedate. 'material-theme' is also nice, but has ugly looking blocks around headings in org-mode. The cool kids these days are mostly using [[https://github.com/hlissner/emacs-doom-themes][Doom Themes]].
 
 #+begin_src emacs-lisp
 (use-package solarized-theme
@@ -184,19 +184,6 @@ To list monospaced fonts, filter with the below, as found on SO.
 Fonts are very dependant on what's installed on each system, so we do some checking first, otherwise fall back to defaults. There's probably a much better way of doing this that allows fall backs. Perhaps don't even need to check for the OS (is the font listing method OS specific?). 
 
 #+BEGIN_SRC emacs-lisp
-    ;; (cond ((eq system-type 'windows-nt)
-    ;;       ;; Windows options
-    ;;       (if (find-font (font-spec :name "Georgia"))
-    ;;          (set-face-attribute 'variable-pitch nil :font "Georgia-11"))
-    ;;       )
-    ;;       ((eq system-type 'gnu/linux)
-    ;;       ;; Linux options
-    ;;       (if (find-font (font-spec :name "DejaVu Serif"))
-    ;;          (set-face-attribute 'variable-pitch nil :font "DejaVu Serif-13"))
-    ;;       (if (find-font (font-spec :name "DejaVu Sans Mono"))
-    ;;          (set-face-attribute 'fixed-pitch nil :font "DejaVu Sans Mono-11")
-    ;;       )))
-
   (defun font-candidate (&rest fonts)
        "Return existing font which first match."
        (cl-find-if (lambda (f) (find-font (font-spec :name f))) fonts))
@@ -204,10 +191,13 @@ Fonts are very dependant on what's installed on each system, so we do some check
   ;; Choose fonts in order of preference here
   ;; Must have at least one font that works on each system; 'nix, MacOS and Windows
   (setq var-pitch-fonts '("DejaVu Serif-13" "Georgia-13"))
-  (setq fix-pitch-fonts '("DejaVu Sans Mono-11" "Menlo-12" "Courier New-12"))
+  (setq fix-pitch-fonts '("Calling Code-12" "DejaVu Sans Mono-11" "Menlo-12" "Courier New-12"))
 
   (set-face-attribute 'variable-pitch nil :font (apply 'font-candidate var-pitch-fonts))
   (set-face-attribute 'fixed-pitch nil :font (apply 'font-candidate fix-pitch-fonts))
+
+  ;; Default font for most things
+  (set-frame-font (apply 'font-candidate fix-pitch-fonts) nil t)
 
     (defun set-buffer-variable-pitch ()
       (interactive)
@@ -222,6 +212,8 @@ Fonts are very dependant on what's installed on each system, so we do some check
     (add-hook 'eww-mode-hook 'set-buffer-variable-pitch)
     (add-hook 'Info-mode-hook 'set-buffer-variable-pitch)
 #+END_SRC
+
+#+RESULTS:
 
 
 ** Mode Line
