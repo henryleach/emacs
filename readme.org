@@ -197,14 +197,12 @@ Fonts are very dependant on what's installed on each system, so there's a list o
 (setq var-pitch-font
  (concat
   (apply 'font-candidate var-pitch-fonts) "-"
-  (cond ((eq system-type 'darwin) ("13"))
-   ("12"))))
+  (if (eq system-type 'darwin) "13" "12")))
 
 (setq fix-pitch-font
  (concat
   (apply 'font-candidate fix-pitch-fonts) "-"
-  (cond ((eq system-type 'darwin) ("12"))
-   ("11"))))
+  (if (eq system-type 'darwin) "12" "11")))
 
 (set-face-attribute 'variable-pitch nil :font var-pitch-font)
 (set-face-attribute 'fixed-pitch nil :font fix-pitch-font)
@@ -225,9 +223,6 @@ Fonts are very dependant on what's installed on each system, so there's a list o
 (add-hook 'eww-mode-hook 'set-buffer-variable-pitch)
 (add-hook 'Info-mode-hook 'set-buffer-variable-pitch)
 #+END_SRC
-
-#+RESULTS:
-
 
 ** Mode Line
 
