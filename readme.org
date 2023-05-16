@@ -312,9 +312,9 @@ Load any personal functions.
 (load-library "hl_functions")
 #+end_src
 
-** TODO Dired
+** Dired
 
-Want to reduce the clutter mostly by hiding hidden files and extended information. 
+Want to reduce the clutter mostly by hiding hidden files and extended information, which can be done via ~dired-omit-mode~ that hides certain files, a function that comes from the additional, built in, dired-x package, and ~dired-hide-details-mode~ that list only file and directory names, and nothing else. Toggle it on and off with ~"("~. 
 
 Perhaps package dired+ or dired-subtree is interesting? also other [[https://github.com/Fuco1/dired-hacks][dired hacks]]. There's also something in [[https://github.com/patrickt/emacs/blob/master/readme.org][this]] about dired opening multiple windows, which mine does and is very annoying. Looks like I should be using =a= instead of =RET=. Also =i= opens a directory in the same buffer below.
 
@@ -323,19 +323,22 @@ Also hiding details by default needs to be enabled somehow.
 (add-hook 'dired-mode-hook (lambda () (dired-hide-details-mode)))
 #+end_src
 
-#+begin_src emacs-lisp :tangle no
-  (use-package dired-x
-    :commands dired-mode
-    :bind (:map dired-mode-map ("C-o" . dired-omit-mode))
-    :config
-    (progn
-      (setq dired-dwim-target t)
-      (setq-default dired-omit-mode t)
-      (setq-default dired-omit-files "^\\.?#\\|^\\.$\\|^\\.\\.$\\|^\\.")
-      )) 
+#+begin_src emacs-lisp
+(with-eval-after-load 'dired
+  (require 'dired-x)
+  ;; Set dired-x global variables here.  For example:
+   (setq-default dired-omit-mode t)
+   (setq-default dired-omit-files "^\\.?#\\|^\\.$\\|^\\.\\.$\\|^\\.")
+   (define-key dired-mode-map (kbd "C-o") 'dired-omit-mode)
+    )
+(add-hook 'dired-mode-hook
+    (lambda ()
+     ;; Set dired-x buffer-local variables here.  For example:
+     ;; (dired-omit-mode 1)
+      ))
 #+end_src
 
-~dired-narrow~ allows you to quickly filter the files in a dired buffer. 
+~dired-narrow~ allows you to quickly filter the files in a dired buffer, hit the keybinding and start typing
 
 #+begin_src emacs-lisp
   (use-package dired-narrow
