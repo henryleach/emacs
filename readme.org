@@ -320,7 +320,7 @@ Perhaps package dired+ or dired-subtree is interesting? also other [[https://git
 
 Also hiding details by default needs to be enabled somehow.
 #+begin_src emacs-lisp
-(add-hook 'dired-mode-hook (lambda () (dired-omit-mode)))
+(add-hook 'dired-mode-hook (lambda () (dired-hide-details-mode)))
 #+end_src
 
 #+begin_src emacs-lisp :tangle no
