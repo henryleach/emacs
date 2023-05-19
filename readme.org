@@ -155,6 +155,17 @@ It's crazy to have them scattered everywhere, instead put them in one place:
 
 Tabs are a [[https://www.emacswiki.org/emacs/TabsAreEvil][bit of a mess]] and it should probably be fixed once I've understood it.
 
+** Bookmarks and Recent Files
+
+Seeing recent files is helpful, and especially when you open Emacs, and then can carry on from where you left off.
+
+#+begin_src emacs-lisp
+  (recentf-mode 1)
+  (setq recentf-max-saved-items 25)	;Otherwise it gets very slow
+  (global-set-key "\C-x\ \C-r" 'recentf-open-files)
+  (add-hook 'after-init-hook 'recentf-open-files)
+#+end_src
+
 * Appearance
 ** Theme
 
@@ -346,7 +357,6 @@ Also hiding details by default needs to be enabled somehow.
   :bind (:map dired-mode-map
               ("/" . dired-narrow)))
 #+end_src
-
 
 ** Which Key
 
@@ -646,8 +656,7 @@ Make the archive match the hierarchy in the main org document. Using the [[https
 
 * Programming
 
-** Smart Parenthes
-is
+** Smart Parentheses
 
 A better way of dealing with brackets. [[https://github.com/Fuco1/smartparens][github page]], and a [[https://ebzzry.com/en/emacs-pairs/][user guide]].
 
@@ -821,7 +830,7 @@ The docs say that editing =csv-separators= should be enough to set the possible 
 )
 #+end_src
 
-** DONE Tex/Latex
+** Tex/Latex
 
 For editing LaTex documents [[https://www.gnu.org/software/auctex/documentation.html][AucTeX]] appears the most integrated option, defaults below from the AucTex manual.
    
@@ -833,7 +842,7 @@ For editing LaTex documents [[https://www.gnu.org/software/auctex/documentation.
 (setq-default TeX-master nil)
 #+end_src
 
-** DONE Lilypond
+** Lilypond
 
    [[https://www.lilypond.org][Lilypond]] is a LaTeX like way of marking up musical notation, and then generating the engraving, normally as a PDF file. There is [[https://lilypond.org/doc/v2.23/Documentation/usage/text-editor-support#emacs-mode][official documentation]] for it, but that didn't quite work, this had [[https://francopasut.netlify.app/post/emacs_write_lilypond/][more details]] to get Emacs to actually find the lilypond-mode.el file which is automatically installed with lilypond, but not automatically found.. This depends on where it's been installed, and there must be a good way of doing that. Here I'm just limiting to where it's installed on a Mac with brew.sh, and only checking it then. There is also an integration with [[https://melpa.org/#/flycheck-lilypond][flycheck]] that might be worth checking out.
 
