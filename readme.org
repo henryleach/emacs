@@ -199,27 +199,30 @@ Fonts are very dependant on what's installed on each system, so there's a list o
    "Return existing font which first match."
    (cl-find-if (lambda (f) (find-font (font-spec :name f))) fonts))
 
-;; Choose fonts in order of preference here
-;; Must have at least one font that works on each system; 'nix, MacOS and Windows
-(setq var-pitch-fonts '("DejaVu Serif" "Georgia"))
-(setq fix-pitch-fonts '("Calling Code" "DejaVu Sans Mono" "Menlo" "Courier New"))
+;; Only run when in a windowing system
+(when (display-graphic-p)
+  ;; Choose fonts in order of preference here
+  ;; Must have at least one font that works on each system; 'nix, MacOS and Windows
+  (setq var-pitch-fonts '("DejaVu Serif" "Georgia"))
+  (setq fix-pitch-fonts '("Calling Code" "DejaVu Sans Mono" "Menlo" "Courier New"))
 
-;; Sizes seem better if slightly larger on MacOS
-(setq var-pitch-font
- (concat
-  (apply 'font-candidate var-pitch-fonts) "-"
-  (if (eq system-type 'darwin) "13" "12")))
+  ;; Sizes seem better if slightly larger on MacOS
+  (setq var-pitch-font
+   (concat
+    (apply 'font-candidate var-pitch-fonts) "-"
+    (if (eq system-type 'darwin) "13" "12")))
 
-(setq fix-pitch-font
- (concat
-  (apply 'font-candidate fix-pitch-fonts) "-"
-  (if (eq system-type 'darwin) "12" "11")))
+  (setq fix-pitch-font
+   (concat
+    (apply 'font-candidate fix-pitch-fonts) "-"
+    (if (eq system-type 'darwin) "12" "11")))
 
-(set-face-attribute 'variable-pitch nil :font var-pitch-font)
-(set-face-attribute 'fixed-pitch nil :font fix-pitch-font)
+  (set-face-attribute 'variable-pitch nil :font var-pitch-font)
+  (set-face-attribute 'fixed-pitch nil :font fix-pitch-font)
 
-;; Default font for most things
-(set-frame-font fix-pitch-font nil t)
+  ;; Default font for most things
+  (set-frame-font fix-pitch-font nil t)
+)
 
 (defun set-buffer-variable-pitch ()
   (interactive)
