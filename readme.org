@@ -433,39 +433,20 @@ Better suggestion customisation. Is the list better vertical, or horizontal?
 
 #+end_src
 
-** Ace-Jump
+** Avy
 
-Jump to a specific point, better with two characters for large buffers, taken from [[https://github.com/winterTTr/ace-jump-mode/issues/23][issue in github]]. 
+[[https://github.com/abo-abo/avy][Avy]] is a fast way of jumping around the visible screen, and it can [[https://karthinks.com/software/avy-can-do-anything/][do lots of other useful things too]].
 
 #+begin_src emacs-lisp
-(use-package ace-jump-mode
-  :ensure t
-  :config
-  ;;(global-set-key (kbd "C-c C-SPC") 'ace-jump-mode)
-)
-
-;; Using only one character on multiple large buffers isn't very
-;; convinient, two makes it much easier.
-(defun ace-jump-two-chars-mode (query-char query-char-2)
-  "AceJump two chars mode"
-  (interactive (list (read-char "First Char:")
-                     (read-char "Second:")))
-
-  (if (eq (ace-jump-char-category query-char) 'other)
-    (error "[AceJump] Non-printable character"))
-
-  ;; others : digit , alpha, punc
-  (let ((query-string (cond ((eq query-char-2 ?\r)
-                 (format "%c" query-char))
-                (t
-                 (format "%c%c" query-char query-char-2)))))
-    (setq ace-jump-query-char query-char)
-    (setq ace-jump-current-mode 'ace-jump-char-mode)
-    (ace-jump-do (regexp-quote query-string))))
-
-(global-set-key (kbd "C-c C-SPC") 'ace-jump-two-chars-mode)
-
+  (use-package avy
+    :ensure t
+    :bind ("C-c C-SPC" . avy-goto-char-timer)
+    )
 #+end_src
+
+If you define avy-actions (see them with ~?~ once you've narrowed your selection) you can type the character for that action (which won't be used as an option in the narrowing process) before typing the characters that select your candidate. Then, once you've selected your candidate that action will be applied.
+
+Must also remember to use ~global-pop-mark~ (~C-x C-SPC~) to jump back to where you were previously after a little excursion.
 
 ** Spell Checking
 
