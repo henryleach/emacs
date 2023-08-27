@@ -62,8 +62,10 @@ Some performance tweaks: add more memory, the default limits are very low and st
    General keybindings that aren't linked to any specific packages.
 
 #+begin_src emacs-lisp
-;; When moving forward I want to be at the start of a word, not the end.
-(global-set-key (kbd "M-f") 'forward-to-word)
+    ;; When moving forward I want to be at the start of a word, not the end.
+    (global-set-key (kbd "M-f") 'forward-to-word)
+  ;; Backspace and Del are a long reach
+  (global-set-key (kbd "C-z") 'backward-kill-word)
 #+end_src
 
 Various characters that aren't reliably on all keyboards I use.
@@ -375,7 +377,7 @@ Shows possible completitions. Also use which-key-postframe?
 
 ** Undo-Tree
 
-Naturally bound to =C-u=, =n= and =p= navigate up and down, =f= and =b= switch branches. =q= (or =C-q=) will quit with changes matching the point you selected.
+Naturally bound to =C-/=, =n= and =p= navigate up and down, =f= and =b= switch branches. =q= (or =C-q=) will quit with changes matching the point you selected.
 
 Also make =C-z= simple undo, I can't get that muscle memory out of my fingers.
 
@@ -390,8 +392,8 @@ Also make =C-z= simple undo, I can't get that muscle memory out of my fingers.
       (global-undo-tree-mode)
       (setq undo-tree-visualizer-timestamps t)
       (setq undo-tree-visualizer-diff t)
-      (global-unset-key "\C-z") ;; remove other bindings
-      (global-set-key "\C-z" 'undo-tree-undo)
+      ;;(global-unset-key "\C-z") ;; remove other bindings
+      ;;(global-set-key "\C-\/" 'undo-tree-undo)
       (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo")))
       ))
 #+end_src
