@@ -282,6 +282,30 @@ Pretty and helpful for any bracket heavy languages.
 )
 #+end_src
 
+** Emoji
+
+Guide on setting up [[https://github.com/iqbalansari/emacs-emojify][emacs-emojify]] by [[https://ianyepan.github.io/posts/emacs-emojis/][Ian YE Pan]]. For Windows there's the Segoe UI Emoji, for other systems you can download the [[https://fonts.google.com/noto/specimen/Noto+Color+Emoji][Noto Colour Emoji]] and install them. For Linux that's adding to a ~~/.fonts~ dir and running ~fc-cache -v ~/.fonts~ to add them.
+
+#+begin_src emacs-lisp
+  (setq emoji-font (cond
+		    ((member "Segoe UI Emoji" (font-family-list)) "Segoe UI Emoji")
+		    ((member "Noto Color Emoji" (font-family-list)) "Noto Color Emoji")))
+
+  (use-package emojify
+      :ensure t
+      :config
+      (when emoji-font (set-fontset-font
+			t 'symbol (font-spec :family emoji-font) nil 'prepend))
+      (setq emojify-display-style 'unicode)
+      (setq emojify-emoji-styles '(unicode))
+      :hook
+	(after-init . global-emojify-mode))
+#+end_src
+
+(Yes, there's a better way of doing the above, code, I just don't have the brainpower right now 😕.)
+
+Then the easiest way to find and insert an emoji is to call ~emojify-apropos-emoji~. 
+
 ** Xah Colour Colour Codes
 
 Highlights RGB values in their colours, using the following function from [[http://xahlee.info/emacs/emacs/emacs_CSS_colors.html][Xah Lee]].
