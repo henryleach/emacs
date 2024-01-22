@@ -242,7 +242,7 @@ Fonts are very dependant on what's installed on each system, so there's a list o
 
 ** Mode Line
 
-These days everyone has a fancy modeline, no-one even knows what the origional one looks like anymore.
+A fancier modeline. Also run ~M-x nerd-icons-install-fonts~ to make sure all the relevant fonts are installed.
 
 #+begin_src emacs-lisp
 ;; Needed for multiple mode-line
@@ -250,10 +250,9 @@ These days everyone has a fancy modeline, no-one even knows what the origional o
 (use-package all-the-icons
   :ensure t
 )
-
 ;; Don't forget to run M-x all-the-icons-install-fonts
-;; to install those too, otherwise it won't work.
 
+;; now uses 
 (use-package doom-modeline
   :ensure t
   :config (doom-modeline-mode 1))
