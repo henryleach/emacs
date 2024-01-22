@@ -208,16 +208,22 @@ Fonts are very dependant on what's installed on each system, so there's a list o
   (setq var-pitch-fonts '("DejaVu Serif" "Georgia"))
   (setq fix-pitch-fonts '("Calling Code" "DejaVu Sans Mono" "Menlo" "Courier New"))
 
-  ;; Sizes seem better if slightly larger on MacOS
+  ;; Adjust sizes depending on the OS
   (setq var-pitch-font
    (concat
     (apply 'font-candidate var-pitch-fonts) "-"
-    (if (eq system-type 'darwin) "13" "12")))
+    (cond ((eq system-type 'darwin) "13")
+      ((eq system-type 'berkeley-unix) "9")
+      (t "12")) ;; Fallback
+     ))
 
   (setq fix-pitch-font
    (concat
     (apply 'font-candidate fix-pitch-fonts) "-"
-    (if (eq system-type 'darwin) "12" "11")))
+    (cond ((eq system-type 'darwin) "12")
+      ((eq system-type 'berkeley-unix) "8")
+      (t "11")) ;; Fallback
+     ))
 
   (set-face-attribute 'variable-pitch nil :font var-pitch-font)
   (set-face-attribute 'fixed-pitch nil :font fix-pitch-font)
@@ -488,6 +494,13 @@ https://200ok.ch/posts/2020-08-22_setting_up_spell_checking_with_multiple_dictio
 https://www.monotux.tech/posts/2021/02/hunspell-multi-lang/
 https://stackoverflow.com/questions/42159012/emacs-spell-check-on-fly-for-2-languages
 
+For OpenBSD install hunspell and dicts with:
+
+#+begin_src sh
+pkg_add hunspell mozilla-dicts-ca
+#+end_src
+
+
 #+BEGIN_SRC emacs-lisp
   ;; set up hunspell dictionary for windows and macos
   (cond ((eq system-type 'windows-nt)
@@ -498,7 +511,7 @@ https://stackoverflow.com/questions/42159012/emacs-spell-check-on-fly-for-2-lang
 		      exec-path exec-suffixes 'file-executable-p))
 	 (setq ispell-list-command "--list")
 	 (setq ispell-local-dictionary "en_GB")
-         ;; Added below to try and get multilanguage to work.
+	 ;; Added below to try and get multilanguage to work.
 	 ;; (setq ispell-dictionary "en_GB,de_DE_frami")
 	 ;; (ispell-set-spellchecker-params)
 	 ;; (ispell-hunspell-add-multi-dic "en_GB,de_DE_frami")
@@ -509,10 +522,17 @@ https://stackoverflow.com/questions/42159012/emacs-spell-check-on-fly-for-2-lang
 	  "DICPATH"
 	  (concat (getenv "HOME") "/Library/Spelling"))
 	 (setenv "DICTIONARY" "en_GB")
-	   ;;Assuming this is where "brew install hunspell" puts it.
+	   ;; Assuming this is where "brew install hunspell" puts it.
 	 (setq ispell-program-name "/usr/local/bin/hunspell")
 	 (setq ispell-list-command "--list")
 	 (setq ispell-local-dictionary "en_GB")
+	 )
+	 ((eq system-type 'berkeley-unix) ;; for OpenBSD, same for other BSDs?
+	 (setenv "DICTDIR" "/usr/local/share/mozilla-dicts")
+	 (setenv "DICTIONARY" "en-GB")
+	 (setq ispell-progam-name "hunspell")
+	 (setq ispell-list-command "--list")
+	 (setq ispell-local-dictionary "en-GB")
 	 )
   )
 #+END_SRC
