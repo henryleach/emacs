@@ -762,7 +762,7 @@ Slightly nicer than Flymake. For Python, make sure it's calling whatever the cur
 (use-package flycheck
   :ensure t
   :config
-  ;;(setq flycheck-python-flake8-executable "python")
+  :hook (sh-mode . flycheck-mode)
 )
 #+end_src
 
