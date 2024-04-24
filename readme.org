@@ -657,6 +657,15 @@ Use a basic org-mode template for new files. More details at [[https://www.gnu.o
     "#+FILETAGS: " \n \n _))
 #+end_src
 
+#+begin_src emacs-lisp
+(define-skeleton html-det-sum
+    "Insert the escaped HTML code to create a detail/summary field"
+    nil
+    >"@@html:<details>@@\n"
+    >"@@html:<summary>@@\""_"\"@@html:</summary>@@\n
+@@html:</details>@@\n")
+#+end_src
+
 ** Exporting
 
  Normally I just want to export a small section as HTML to copy into an e-mail, never the whole file. This setting doesn't seem to stick though.
