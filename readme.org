@@ -662,7 +662,7 @@ Use a basic org-mode template for new files. More details at [[https://www.gnu.o
     "Insert the escaped HTML code to create a detail/summary field"
     nil
     >"@@html:<details>@@\n"
-    >"@@html:<summary>@@\""_"\"@@html:</summary>@@\n
+    >"@@html:<summary>@@"_"@@html:</summary>@@\n
 @@html:</details>@@\n")
 #+end_src
 
