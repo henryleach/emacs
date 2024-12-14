@@ -213,7 +213,7 @@ Fonts are very dependant on what's installed on each system, so there's a list o
    (concat
     (apply 'font-candidate var-pitch-fonts) "-"
     (cond ((eq system-type 'darwin) "13")
-      ((eq system-type 'berkeley-unix) "9")
+      ((eq system-type 'berkeley-unix) "12")
       (t "12")) ;; Fallback
      ))
 
@@ -221,7 +221,7 @@ Fonts are very dependant on what's installed on each system, so there's a list o
    (concat
     (apply 'font-candidate fix-pitch-fonts) "-"
     (cond ((eq system-type 'darwin) "12")
-      ((eq system-type 'berkeley-unix) "8")
+      ((eq system-type 'berkeley-unix) "11")
       (t "11")) ;; Fallback
      ))
 
@@ -528,14 +528,16 @@ pkg_add hunspell mozilla-dicts-ca
 	 (setq ispell-local-dictionary "en_GB")
 	 )
 	 ((eq system-type 'berkeley-unix) ;; for OpenBSD, same for other BSDs?
-	 (setenv "DICTDIR" "/usr/local/share/mozilla-dicts")
-	 (setenv "DICTIONARY" "en-GB")
-	 (setq ispell-progam-name "hunspell")
+	 (setenv "DICTDIR" "/usr/local/share/hunspell")  ;; FreeBSD
+	 ;; (setenv "DICTDIR" "/usr/local/share/mozilla-dicts")  ;; OpenBSD
+	 (setenv "DICTIONARY" "en_GB")  ;; - in OpenBSD, _ in FreeBSD
+	 (setq ispell-program-name "hunspell")
 	 (setq ispell-list-command "--list")
-	 (setq ispell-local-dictionary "en-GB")
+	 (setq ispell-local-dictionary "en_GB")
 	 )
   )
 #+END_SRC
+
 
 #+BEGIN_SRC emacs-lisp
 (add-hook 'text-mode-hook 'flyspell-mode)
